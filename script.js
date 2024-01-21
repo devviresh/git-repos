@@ -105,6 +105,16 @@ function displayRepos(repos) {
             repoItem.appendChild(repoLanguage);
         }
 
+        if (repo.topics && repo.topics.length > 0) {
+            const repoTopics = document.createElement("ul");
+            repo.topics.forEach((topic) => {
+                const topicItem = document.createElement("li");
+                topicItem.textContent = topic;
+                repoTopics.appendChild(topicItem);
+            });
+            repoItem.appendChild(repoTopics);
+        }
+
         reposList.appendChild(repoItem);
     });
 
