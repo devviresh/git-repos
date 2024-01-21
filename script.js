@@ -1,5 +1,7 @@
+const loader = document.getElementById('loader');
 const prevPageBtn = document.getElementById("prevPageBtn");
 const nextPageBtn = document.getElementById("nextPageBtn");
+const searchBox = document.getElementById("repoSearch");
 const reposList = document.getElementById("repos-list");
 const usernameInput = document.getElementById("username");
 const perPageSelect = document.getElementById("perPage");
@@ -12,10 +14,13 @@ function onSearch() {
 
 async function getUserDetails() {
     const username = document.getElementById('username').value;
+    loader.style.display = 'block';
 
     try {
         const response = await fetch(`https://api.github.com/users/${username}`);
         const userData = await response.json();
+        loader.style.display = 'none';
+
 
         const userDetails = document.getElementById('user-details');
 
@@ -38,6 +43,7 @@ async function getUserDetails() {
             </div>
         `;
     } catch (error) {
+        loader.style.display = 'none';
         console.error(error);
         alert('Error fetching user details.');
     }
@@ -53,12 +59,16 @@ function getRepos() {
     const perPage = perPageSelect.value;
     const endpoint = getPublicReposEndpoint(userName, currentPage, perPage);
 
+    loader.style.display = 'block';
+
     fetch(endpoint)
         .then((response) => response.json())
         .then((repos) => {
+            loader.style.display = 'none';
             displayRepos(repos);
         })
         .catch((error) => {
+            loader.style.display = 'none';
             console.error("Error fetching repositories:", error);
             alert("Error fetching repositories. Please try again.");
         });
@@ -68,12 +78,14 @@ function displayRepos(repos) {
     reposList.innerHTML = ""; // Clear previous results
 
     if (repos.length === 0) {
+        searchBox.style.display = 'none';
         reposList.innerHTML = "<p>No repositories found.</p>";
         prevPageBtn.disabled = currentPage === 1;
         nextPageBtn.disabled = true;
         return;
     }
 
+    searchBox.style.display = 'block';
     repos.forEach((repo) => {
         const repoItem = document.createElement("li");
         repoItem.className = "repo-item";
@@ -125,4 +137,21 @@ function nextPage() {
 
 function getPublicReposEndpoint(userName, page, perPage) {
     return `https://api.github.com/users/${userName}/repos?page=${page}&per_page=${perPage}`;
+}
+
+
+//  Filter Repositories by name
+function filterRepositories() {
+    console.log("filtering...")
+    const searchTerm = document.getElementById('repoSearch').value.toLowerCase();
+    const repositoryDivs = document.querySelectorAll('.repo-item');
+
+    repositoryDivs.forEach(repositoryDiv => {
+        const repositoryName = repositoryDiv.querySelector('h2').textContent.toLowerCase();
+        if (repositoryName.includes(searchTerm)) {
+            repositoryDiv.style.display = 'block';
+        } else {
+            repositoryDiv.style.display = 'none';
+        }
+    });
 }

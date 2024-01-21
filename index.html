@@ -10,9 +10,8 @@
 
 <body>
     <h1>GitHub Repositories</h1>
-
     <label for="username">Enter GitHub Username:</label>
-    <input type="text" id="username" placeholder="Enter GitHub Username" />
+    <input type="text" id="username" placeholder="Username" />
 
     <label for="perPage">Items Per Page:</label>
     <select id="perPage" onchange="getRepos()">
@@ -24,12 +23,19 @@
 
     <button onclick="onSearch()">Get Repositories</button>
 
+    <!-- =============== USER SECTION =============== -->
     <div id="user-details" class="user-details">
         <!-- User details will be displayed here -->
     </div>
 
+    <!-- =============== LOADER =============== -->
+
+    <!-- =============== REPOSITORIES =============== -->
+    <input type="text" id="repoSearch" placeholder="Search for repositories.." oninput="filterRepositories()">
+    <div class="loader" id="loader"></div>
     <ul id="repos-list"></ul>
 
+    <!-- =============== PAGINATION =============== -->
     <div id="pagination">
         <button onclick="prevPage()" id="prevPageBtn" disabled>
             Previous Page
